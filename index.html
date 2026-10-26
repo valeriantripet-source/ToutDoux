@@ -610,6 +610,39 @@ p{margin:0}
     o.connect(f); f.connect(g); g.connect(a.destination); o.start(t); o.stop(t+.5);
   }
 
+  /* Ronronnement : bruit grave filtré, pulsé ~25 fois par seconde, sur deux respirations */
+  let purrNodes = [];
+  function stopPurr(){ purrNodes.forEach(n => { try { n.stop(); } catch(e){} }); purrNodes = []; }
+  function purr(){
+    try { if(navigator.vibrate) navigator.vibrate(Array.from({length:36}, () => 18)); } catch(e){}
+    if(!state.sound) return; const a = audio(); if(!a) return;
+    stopPurr();
+    const t = a.currentTime + .03, D = 2.8;
+    const len = Math.floor(a.sampleRate * D), buf = a.createBuffer(1, len, a.sampleRate), data = buf.getChannelData(0);
+    let last = 0;
+    for(let i = 0; i < len; i++){ last = (last + .02 * (Math.random() * 2 - 1)) / 1.02; data[i] = last * 3.5; }
+    const src = a.createBufferSource(); src.buffer = buf;
+    const lp = a.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 420; lp.Q.value = .8;
+    const am = a.createGain(); am.gain.value = .5;
+    const lfo = a.createOscillator(); lfo.type = "sine";
+    lfo.frequency.setValueAtTime(26, t); lfo.frequency.setValueAtTime(22, t + 1.3);
+    const depth = a.createGain(); depth.gain.value = .5;
+    lfo.connect(depth); depth.connect(am.gain);
+    const body = a.createOscillator(); body.type = "sine"; body.frequency.value = 52;
+    const bodyG = a.createGain(); bodyG.gain.value = .12;
+    const env = a.createGain(); const g = env.gain;
+    g.setValueAtTime(.0001, t);
+    g.exponentialRampToValueAtTime(.32, t + .18);
+    g.linearRampToValueAtTime(.26, t + 1.05);
+    g.exponentialRampToValueAtTime(.03, t + 1.2);
+    g.exponentialRampToValueAtTime(.38, t + 1.4);
+    g.linearRampToValueAtTime(.3, t + 2.4);
+    g.exponentialRampToValueAtTime(.0001, t + D);
+    src.connect(lp); lp.connect(am); body.connect(bodyG); bodyG.connect(am); am.connect(env); env.connect(a.destination);
+    [src, lfo, body].forEach(n => { n.start(t); n.stop(t + D + .05); });
+    purrNodes = [src, lfo, body];
+  }
+
   /* ---------- Icônes ---------- */
   const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>`;
   const xIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
@@ -935,7 +968,8 @@ p{margin:0}
   };
   let sayTimer = null;
   $("catBtn").addEventListener("click", () => {
-    meow(); hearts(3);
+    if(mood === "pout") meow(); else purr();
+    hearts(3);
     const done = new Set(doneToday()), nt = state.tasks.find(t => !done.has(t.id));
     let line = pick(TAPS[mood]);
     if(mood === "awake" && nt) line += lc(nt.label) + ".";
