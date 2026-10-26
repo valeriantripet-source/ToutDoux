@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tout Doux</title>
+<meta name="description" content="Ma routine du matin, tout en douceur.">
+<meta name="theme-color" content="#F7F6F4">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="64x64" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Tout Doux">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap">
+<style>
+/* Base (remplace le cadre fourni par claude.ai) */
+html{-webkit-text-size-adjust:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+label.link{display:inline-flex;align-items:center}
+.import-box{display:flex;flex-direction:column;gap:10px;background:var(--p-peche);border-radius:14px;padding:12px 14px;color:var(--on-pastel);font-weight:600}
+/* Layout : app mobile à une colonne (max 480px), cartes blanches à ombre douce sur fond blanc cassé, touches pastel, boutons à contour net. Mochi le chat vit au centre de l'anneau du jour. */
+:root{
+  color-scheme:light;
+  --bg:#F7F6F4; --surface:#FFFFFF; --surface-2:#F4F2F0; --ink:#2B2A2E; --ink-2:#4A484E; --muted:#86838B;
+  --line:#ECE9E6; --line-2:#F1EFEC; --field:#DDD9D5; --track:#EFECE9;
+  --signal:#8DD1B4; --action:#CDE9DC; --action-press:#B7DFCC; --pop:#2B2A2E; --on-pastel:#2B2A2E;
+  --p-lilas:#F0D9EF; --p-rose:#FCDCE1; --p-peche:#FFE6BB; --p-olive:#E9ECCE; --p-menthe:#CDE9DC; --p-ciel:#C4DFE5;
+  --a-ciel:#8EC5D3; --a-menthe:#8DD1B4; --a-peche:#F6C56F; --a-lilas:#DDA6D8;
+  --shadow:0 1px 2px rgba(43,42,46,.04),0 6px 18px rgba(43,42,46,.06);
+  --scrim:rgba(247,246,244,.75); --toast:#FFFFFF;
+  --f:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;-webkit-tap-highlight-color:transparent;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.app{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{margin:0;text-wrap:balance}
+h2{font-size:18px;font-weight:700;letter-spacing:-.01em}
+p{margin:0}
+.muted{color:var(--muted);font-size:14px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);padding:16px;display:flex;flex-direction:column;gap:12px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* En-tête */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-name{font-weight:500;font-size:20px;letter-spacing:-.02em}
+.brand-name b{font-weight:800}
+.top-r{display:flex;align-items:center;gap:10px;min-width:0}
+.date{font-size:14px;font-weight:600;color:var(--muted);text-transform:capitalize;text-align:right}
+.icon-btn{width:40px;height:40px;flex:none;border-radius:50%;border:1.5px solid var(--field);background:var(--surface);color:var(--ink-2);display:grid;place-items:center;cursor:pointer}
+
+/* Carte du jour */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:16px 18px;align-items:center;padding:20px}
+.ring{position:relative;width:156px;height:156px;flex:none}
+.ring > svg{width:100%;height:100%;display:block}
+.ring path,.ring circle{transition:stroke .35s ease}
+.cat-btn{position:absolute;left:50%;top:50%;width:104px;height:104px;transform:translate(-50%,-50%);border:0;padding:0;background:none;cursor:pointer;border-radius:50%}
+.cat-btn svg{width:100%;height:100%;display:block;overflow:visible}
+.hero-txt{display:flex;flex-direction:column;gap:10px;min-width:0}
+.count{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.hero-txt h1{font-size:21px;font-weight:700;line-height:1.22;letter-spacing:-.01em}
+.streak{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;background:var(--p-peche);color:var(--on-pastel);border-radius:999px;padding:6px 12px 6px 8px;font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.streak i{width:22px;height:22px;border-radius:50%;background:var(--a-peche);display:grid;place-items:center}
+.jokers{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:500}
+.jk{width:18px;height:18px;border-radius:50%;background:var(--p-ciel);border:1.5px solid var(--a-ciel);flex:none}
+.say{grid-column:1 / -1;position:relative;background:var(--surface-2);border-radius:16px;padding:10px 14px;font-size:14px;font-weight:500;color:var(--ink-2)}
+.say::before{content:"";position:absolute;top:-8px;left:70px;border:8px solid transparent;border-bottom-color:var(--surface-2);border-top:0}
+.say b{color:var(--ink);font-weight:700}
+.heart{position:absolute;left:50%;top:30%;width:20px;height:20px;pointer-events:none;animation:float 1.1s ease-out forwards}
+@keyframes float{0%{transform:translate(-50%,0) scale(.4);opacity:0}20%{opacity:1;transform:translate(calc(-50% + var(--dx)),-10px) scale(1)}100%{transform:translate(calc(-50% + var(--dx)*2),-70px) scale(.9);opacity:0}}
+
+/* Mochi */
+.cat .tail{transform-origin:74px 78px;transform-box:view-box}
+.cat.happy .tail{animation:wag 1.1s ease-in-out infinite}
+.cat.awake .tail{animation:wag 2.6s ease-in-out infinite}
+@keyframes wag{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+.cat .bod{transform-origin:50px 90px;transform-box:view-box}
+.cat.sleep .bod,.cat.sleep .head{animation:breathe 3.2s ease-in-out infinite}
+.cat .head{transform-origin:50px 66px;transform-box:view-box}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025,1.04)}}
+.cat.happy .head{animation:purr .5s ease-in-out infinite}
+@keyframes purr{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.cat .zz{animation:zz 2.4s ease-in-out infinite}
+@keyframes zz{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-4px);opacity:.8}}
+.cat-btn:active svg{transform:scale(.95)}
+
+/* Liste des tâches */
+.list{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.task{display:flex;align-items:center;gap:14px;width:100%;min-height:62px;padding:12px 16px;border:0;border-bottom:1px solid var(--line-2);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .2s}
+.task:last-child{border-bottom:0}
+.task:hover{background:var(--surface-2)}
+.check{width:28px;height:28px;flex:none;border-radius:50%;border:2px solid var(--field);display:grid;place-items:center;transition:background .2s,border-color .2s}
+.check svg{opacity:0;transform:scale(.5);transition:.2s}
+.task.done .check{background:var(--c);border-color:var(--c)}
+.task.done .check svg{opacity:1;transform:none}
+.task.done .t-label{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--c);text-decoration-thickness:2px}
+.t-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.t-label{font-weight:600;font-size:16px;overflow-wrap:anywhere}
+.t-sub{font-size:12px;color:var(--muted)}
+.pill{font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;white-space:nowrap;background:var(--pp);color:var(--on-pastel);font-variant-numeric:tabular-nums}
+.pill.zero{background:var(--surface-2);color:var(--muted)}
+@keyframes tick{0%{transform:scale(1)}40%{transform:scale(1.2)}100%{transform:scale(1)}}
+.task.just .check{animation:tick .35s ease}
+
+.head-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;font:600 14px var(--f);cursor:pointer;
+  background:var(--surface);color:var(--ink);border:2px solid var(--pop);box-shadow:3px 3px 0 var(--a-lilas);transition:transform .08s ease,box-shadow .08s ease}
+.btn-primary{background:var(--action);color:var(--on-pastel);box-shadow:3px 3px 0 var(--pop);font-weight:700}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--pop)}
+.btn-primary:active{background:var(--action-press)}
+.link{background:none;border:0;padding:0;min-height:44px;color:var(--ink);font:600 14px var(--f);cursor:pointer;text-decoration:underline;text-decoration-color:var(--signal);text-decoration-thickness:2px;text-underline-offset:5px}
+
+/* Édition */
+.edit-item{display:flex;gap:10px;align-items:center;min-height:44px}
+.edit-item span{flex:1;min-width:0;font-weight:600;overflow-wrap:anywhere}
+.del{width:40px;height:40px;flex:none;border-radius:50%;border:1.5px solid var(--field);background:var(--surface);color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.del:hover{color:#C8353A;border-color:#E6A3A8}
+.del.mv{color:var(--ink-2)}
+.del.mv:hover{color:var(--ink);border-color:var(--a-menthe);background:var(--p-menthe)}
+.del:disabled{opacity:.35;cursor:default;background:var(--surface);border-color:var(--field);color:var(--muted)}
+.edit-item{gap:6px}
+.edit-item span{margin-right:4px}
+.add{display:flex;gap:10px}
+.input{flex:1;min-width:0;min-height:46px;border:1px solid var(--field);border-radius:14px;padding:0 14px;background:var(--surface);color:var(--ink);font:inherit}
+
+/* Carte bonus */
+.flip{perspective:1000px;height:168px}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.3,1.3,.5,1);transform-style:preserve-3d}
+.flip.open .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:var(--shadow)}
+.front{width:100%;border:0;cursor:pointer;font:inherit;color:var(--on-pastel);display:flex;align-items:center;gap:16px;padding:18px 20px;text-align:left;
+  background-color:var(--p-lilas);background-image:radial-gradient(rgba(255,255,255,.75) 2px,transparent 2.5px);background-size:16px 16px}
+.front .q{width:64px;height:64px;flex:none;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:30px;font-weight:800;box-shadow:inset 0 0 0 3px var(--a-lilas)}
+.front strong{display:block;font-size:18px;font-weight:700}
+.front span{font-size:14px;font-weight:500}
+.back{transform:rotateY(180deg);background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+.challenge{font-size:18px;font-weight:700;line-height:1.3;text-wrap:balance}
+.bonus-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.won{display:flex;align-items:center;gap:10px;font-weight:700}
+.star-dot{width:30px;height:30px;border-radius:50%;background:var(--p-peche);display:grid;place-items:center;flex:none}
+
+/* Semaine */
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:6px}
+.dn{font-size:12px;font-weight:600;color:var(--muted);text-transform:capitalize}
+.dot{position:relative;width:100%;max-width:40px;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:13px;font-variant-numeric:tabular-nums;background:var(--surface-2);color:var(--muted)}
+.dot.full{background:var(--p-menthe);color:var(--on-pastel);box-shadow:inset 0 0 0 2px var(--a-menthe)}
+.dot.joker{background:var(--p-ciel);color:var(--on-pastel);box-shadow:inset 0 0 0 2px var(--a-ciel)}
+.dot.miss{background:transparent;box-shadow:inset 0 0 0 1.5px var(--field)}
+.dot.pending{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 2px var(--signal)}
+.dot .st{position:absolute;top:-3px;right:-3px;width:14px;height:14px}
+.day.today .dn{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);font-weight:500}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+
+/* Récompenses */
+.next{font-size:14px;color:var(--ink-2)}
+.next b{color:var(--ink)}
+.bar{height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.bar span{display:block;height:100%;border-radius:99px;background:var(--signal);transition:width .4s ease}
+.badges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.badge{display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;padding:12px 6px;border-radius:16px;background:var(--surface-2);min-width:0}
+.medal{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:18px;background:var(--surface);color:var(--muted);box-shadow:inset 0 0 0 1.5px var(--field);font-variant-numeric:tabular-nums}
+.badge.on{background:var(--pb)}
+.badge.on .medal{color:var(--ink);box-shadow:inset 0 0 0 3px var(--pa)}
+.b-name{font-weight:700;font-size:13px;line-height:1.2;color:var(--muted)}
+.badge.on .b-name{color:var(--on-pastel)}
+.b-req{font-size:11px;font-weight:600;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
+.badge.on .b-req{color:var(--ink-2)}
+.rewards{display:flex;flex-direction:column;gap:8px}
+.rw{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center}
+.rw label{font-weight:700;font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tile{background:var(--surface);border-radius:16px;box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-size:26px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{font-size:12px;font-weight:600;color:var(--muted)}
+.sync{text-align:center;font-size:12px;color:var(--muted)}
+
+/* Toast et fenêtre */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:20;max-width:calc(100% - 32px);padding:10px 18px;border-radius:999px;background:var(--toast);color:var(--ink);font-size:14px;font-weight:600;text-align:center;box-shadow:0 8px 24px rgba(43,42,46,.12),inset 0 0 0 2px var(--p-menthe)}
+.modal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:var(--scrim);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  padding:env(safe-area-inset-top,0px) max(16px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(16px,env(safe-area-inset-left,0px))}
+.sheet{width:min(360px,100%);background:var(--surface);border-radius:24px;box-shadow:0 12px 40px rgba(43,42,46,.12);padding:24px 22px 22px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;animation:rise .35s cubic-bezier(.2,1.2,.4,1)}
+.sheet .m-cat{width:120px;height:120px}
+.sheet .m-cat svg{width:100%;height:100%;overflow:visible}
+.sheet h3{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.sheet p{color:var(--ink-2)}
+.gift{background:var(--p-peche);border-radius:14px;padding:10px 14px;font-weight:600;color:var(--on-pastel);width:100%}
+.sheet .btn{margin-top:6px;min-width:160px}
+@keyframes rise{from{transform:translateY(16px) scale(.96);opacity:0}to{transform:none;opacity:1}}
+
+@media (max-width:420px){
+  .hero{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .hero-txt{align-items:center}
+  .streak{align-self:center}
+  .say::before{left:50%;margin-left:-8px}
+  .date{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<main class="app">
+  <header class="top">
+    <div class="brand">
+      <svg width="36" height="36" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="26" cy="13" r="9" fill="#FFE6BB"/>
+        <rect x="3" y="8" width="28" height="28" rx="14" fill="#CDE9DC"/>
+        <path d="M10.5 22.5l4.5 4.5 9-10" fill="none" stroke="#2B2A2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="brand-name">tout <b>doux</b></span>
+    </div>
+    <div class="top-r">
+      <div class="date" id="date"></div>
+      <button class="icon-btn" id="soundBtn" type="button" aria-pressed="true" aria-label="Son activé"></button>
+    </div>
+  </header>
+
+  <section class="card hero">
+    <div class="ring">
+      <svg viewBox="0 0 120 120" id="ring" aria-hidden="true"></svg>
+      <button class="cat-btn" id="catBtn" type="button" aria-label="Caresser Mochi"></button>
+    </div>
+    <div class="hero-txt" aria-live="polite">
+      <span class="count" id="count"></span>
+      <h1 id="msg">Une case à la fois.</h1>
+      <span class="streak"><i><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2B2A2E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5 1-8.5z"/></svg></i><span id="streak">0 jour d'affilée</span></span>
+      <div class="jokers" id="jokers"></div>
+    </div>
+    <p class="say" id="say"></p>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px">
+    <div class="head-row"><h2>Ma routine du matin</h2><button class="link" id="editBtn" type="button">Modifier</button></div>
+    <div class="list" id="tasks"></div>
+  </section>
+
+  <section class="card" id="editor" hidden>
+    <div class="head-row"><h2>Mes tâches</h2><span class="muted" id="editCount"></span></div>
+    <div id="editList" style="display:flex;flex-direction:column;gap:4px"></div>
+    <form class="add" id="addForm">
+      <input class="input" id="newTask" type="text" maxlength="48" placeholder="Ex. : boire un grand verre d'eau" aria-label="Nouvelle tâche" autocomplete="off">
+      <button class="btn btn-primary" type="submit">Ajouter</button>
+    </form>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:10px">
+    <div class="head-row"><h2>Carte bonus</h2><span class="muted" id="starsTxt"></span></div>
+    <div class="flip" id="flip">
+      <div class="flip-in">
+        <button class="face front" id="flipBtn" type="button">
+          <span class="q" aria-hidden="true">?</span>
+          <span><strong>Le défi du jour</strong><span>Facultatif. Touche pour retourner la carte et gagner une étoile.</span></span>
+        </button>
+        <div class="face back" id="back"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Les 7 derniers jours</h2>
+    <div class="days" id="days"></div>
+    <div class="legend">
+      <span><i style="background:var(--a-menthe)"></i>Journée bouclée</span>
+      <span><i style="background:var(--a-ciel)"></i>Sauvée par un joker</span>
+      <span><i style="box-shadow:inset 0 0 0 1.5px var(--field)"></i>Ratée</span>
+      <span><i style="background:var(--a-peche)"></i>Défi bonus</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head-row"><h2>Récompenses</h2><button class="link" id="rwBtn" type="button">Mes cadeaux</button></div>
+    <p class="next" id="next"></p>
+    <div class="bar"><span id="barFill" style="width:0"></span></div>
+    <div class="badges" id="badges"></div>
+    <div class="rewards" id="rwEditor" hidden>
+      <p class="muted">Écris ce que tu t'offres à chaque palier. Mochi te le rappellera le jour venu.</p>
+      <div id="rwList" class="rewards"></div>
+    </div>
+    <p class="muted" style="font-size:13px">Chaque badge offre un accessoire à Mochi. Chaque série de 7 jours te donne aussi un joker (2 au maximum) qui sauve un jour raté.</p>
+  </section>
+
+  <div class="stats">
+    <div class="tile"><b id="sBest">0</b><span>Record</span></div>
+    <div class="tile"><b id="sTotal">0</b><span>Jours bouclés</span></div>
+    <div class="tile"><b id="sStars">0</b><span>Étoiles</span></div>
+  </div>
+  <section class="card">
+    <h2>Mes données</h2>
+    <p class="muted">Tout reste sur cet appareil, rien n'est envoyé ailleurs. Exporte une copie de temps en temps, ou pour passer sur un autre téléphone.</p>
+    <div class="bonus-actions">
+      <button class="btn" id="exportBtn" type="button">Exporter une copie</button>
+      <label class="link" for="importFile">Importer une copie</label>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+    <div class="import-box" id="importBox" hidden>
+      <span id="importTxt"></span>
+      <div class="bonus-actions"><button class="btn btn-primary" id="importYes" type="button">Remplacer</button><button class="link" id="importNo" type="button">Annuler</button></div>
+    </div>
+    <p class="muted" id="dataMsg" role="status"></p>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="sheet">
+    <div class="m-cat" id="mCat"></div>
+    <h3 id="mTitle"></h3>
+    <p id="mText"></p>
+    <div class="gift" id="mGift" hidden></div>
+    <button class="btn btn-primary" id="mClose" type="button">Super</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const LS_KEY = "todoo-routine-v1";
+  const DEFAULT_TASKS = [
+    {id:"chats",   label:"Donner à manger aux chats"},
+    {id:"dents",   label:"Me brosser les dents"},
+    {id:"skin",    label:"Skin care"},
+    {id:"tapis",   label:"Faire un peu de tapis de marche"},
+    {id:"emails",  label:"Regarder mes e-mails"},
+    {id:"allianz", label:"Organiser les e-mails Allianz"}
+  ];
+  const PAL = [["#C4DFE5","#8EC5D3"],["#CDE9DC","#8DD1B4"],["#FFE6BB","#F6C56F"],["#F0D9EF","#DDA6D8"]];
+  const BADGES = [
+    {n:3,   name:"Démarrage",      p:3, acc:"un nœud",       hint:"Un bon café dehors"},
+    {n:7,   name:"Semaine pleine", p:0, acc:"une écharpe",   hint:"Un dessert que j'adore"},
+    {n:14,  name:"Quinze jours",   p:1, acc:"une fleur",     hint:"Une soirée cinéma"},
+    {n:30,  name:"Mois parfait",   p:2, acc:"une couronne",  hint:"Un bon resto"},
+    {n:60,  name:"Bien ancré",     p:3, acc:"un coussin",    hint:"Un nouvel équipement de sport"},
+    {n:100, name:"Cent jours",     p:1, acc:"des paillettes",hint:"Un week-end quelque part"}
+  ];
+  const CHALLENGES = [
+    "Boire un grand verre d'eau","Ouvrir la fenêtre 5 minutes","Faire 10 squats","Faire ton lit",
+    "Ranger un seul objet qui traîne","Envoyer un message gentil à quelqu'un","2 minutes d'étirements",
+    "Noter 3 choses qui te font plaisir","Petit-déjeuner sans écran","Sortir prendre l'air 5 minutes",
+    "Écrire les 3 priorités de ta journée","30 secondes de gainage","Mettre une chanson que tu aimes, fort",
+    "Faire un gros câlin aux chats","Pas de réseaux sociaux avant 10 h","10 respirations lentes",
+    "Vider la corbeille de ton bureau","Boire ton café assis, sans téléphone","Monter les escaliers au lieu de l'ascenseur",
+    "Répondre au message que tu repousses depuis des jours","Préparer tes affaires pour demain soir"
+  ];
+  const CHEERS = ["Bien joué.","Et une de plus.","Tranquille.","Tout doux, mais sûrement.","C'est fait.","Mochi approuve."];
+  const JOKER_MAX = 2;
+  const INK = "#2B2A2E", FUR = "#FFE6BB", FUR2 = "#F6C56F", PINK = "#FCDCE1", NOSE = "#F2A7B4";
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const pad = n => String(n).padStart(2,"0");
+  const keyOf = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  const parseKey = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y,m-1,d); };
+  const todayKey = () => keyOf(new Date());
+  const shift = (k,n) => { const d = parseKey(k); d.setDate(d.getDate()+n); return keyOf(d); };
+  const plural = (n, one, many) => n + " " + (n > 1 ? many : one);
+  const pick = a => a[Math.floor(Math.random()*a.length)];
+  const lc = s => s.charAt(0).toLowerCase() + s.slice(1);
+
+  /* ---------- Anneau : un arc pastel par tâche ---------- */
+  function polar(r, deg){ const a = (deg - 90) * Math.PI / 180; return [60 + r*Math.cos(a), 60 + r*Math.sin(a)]; }
+  function arc(r, a0, a1){ const [x0,y0] = polar(r,a0), [x1,y1] = polar(r,a1); return `M${x0.toFixed(2)} ${y0.toFixed(2)} A${r} ${r} 0 ${a1-a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`; }
+  function ringSvg(flags){
+    const n = flags.length, sw = 9, r = 54;
+    if(n <= 1) return `<circle cx="60" cy="60" r="${r}" fill="none" stroke-width="${sw}" stroke="${n && flags[0] ? PAL[0][1] : "var(--track)"}"/>`;
+    const gap = Math.min(20, 110 / n), step = 360 / n;
+    return flags.map((on,i) => `<path d="${arc(r, i*step + gap/2, (i+1)*step - gap/2)}" fill="none" stroke-linecap="round" stroke-width="${sw}" stroke="${on ? PAL[i % 4][1] : "var(--track)"}"/>`).join("");
+  }
+
+  /* ---------- Mochi ---------- */
+  function catSvg(mood, best){
+    const has = n => best >= n;
+    const eyes = {
+      sleep:`<path d="M37 45 q4.5 4 9 0 M54 45 q4.5 4 9 0" fill="none" stroke="${INK}" stroke-width="2.3" stroke-linecap="round"/>`,
+      awake:`<ellipse cx="42" cy="44" rx="2.8" ry="3.6" fill="${INK}"/><ellipse cx="58" cy="44" rx="2.8" ry="3.6" fill="${INK}"/><circle cx="43" cy="42.6" r="1" fill="#fff"/><circle cx="59" cy="42.6" r="1" fill="#fff"/>`,
+      happy:`<path d="M37 47 q4.5 -6 9 0 M54 47 q4.5 -6 9 0" fill="none" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"/>`,
+      pout:`<circle cx="45" cy="45.5" r="2.5" fill="${INK}"/><circle cx="61" cy="45.5" r="2.5" fill="${INK}"/><path d="M38 39.5 l7 2.2 M62 39.5 l-7 2.2" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>`
+    }[mood];
+    const mouth = mood === "happy"
+      ? `<path d="M45.5 53.5 q4.5 6.5 9 0 z" fill="${NOSE}" stroke="${INK}" stroke-width="1.6" stroke-linejoin="round"/>`
+      : mood === "pout" ? `<path d="M46.5 56.5 q3.5 -2.5 7 0" fill="none" stroke="${INK}" stroke-width="1.8" stroke-linecap="round"/>`
+      : `<path d="M46 54 q2 2.2 4 0 q2 2.2 4 0" fill="none" stroke="${INK}" stroke-width="1.7" stroke-linecap="round"/>`;
+    const blush = (mood === "happy" || mood === "awake") ? `<ellipse cx="35.5" cy="52" rx="4.2" ry="2.6" fill="${PINK}"/><ellipse cx="64.5" cy="52" rx="4.2" ry="2.6" fill="${PINK}"/>` : "";
+    const zz = mood === "sleep" ? `<g class="zz" fill="${INK}" font-family="Figtree, sans-serif" font-weight="800"><text x="72" y="24" font-size="12">z</text><text x="81" y="14" font-size="9">z</text></g>` : "";
+    const sparkle = (x,y,s) => `<path d="M${x} ${y-s} Q${x} ${y} ${x+s} ${y} Q${x} ${y} ${x} ${y+s} Q${x} ${y} ${x-s} ${y} Q${x} ${y} ${x} ${y-s}Z" fill="${FUR2}"/>`;
+    return `<svg viewBox="0 0 100 100" class="cat ${mood}" aria-hidden="true">
+      ${has(100) ? sparkle(12,30,6) + sparkle(90,38,5) + sparkle(16,72,4) : ""}
+      ${has(60) ? `<rect x="16" y="82" width="68" height="14" rx="7" fill="#F0D9EF" stroke="${INK}" stroke-width="2"/>` : ""}
+      <g class="tail"><path d="M74 80 C94 80 95 58 84 52" fill="none" stroke="${INK}" stroke-width="9" stroke-linecap="round"/><path d="M74 80 C94 80 95 58 84 52" fill="none" stroke="${FUR}" stroke-width="4.6" stroke-linecap="round"/></g>
+      <g class="bod"><ellipse cx="50" cy="72" rx="27" ry="19" fill="${FUR}" stroke="${INK}" stroke-width="2.5"/>
+        <ellipse cx="40" cy="89" rx="6.5" ry="4" fill="${FUR}" stroke="${INK}" stroke-width="2.2"/><ellipse cx="60" cy="89" rx="6.5" ry="4" fill="${FUR}" stroke="${INK}" stroke-width="2.2"/></g>
+      ${has(7) ? `<path d="M30 62 q20 9 40 0 l0 6.5 q-20 9 -40 0 z" fill="#8DD1B4" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/><path d="M58 68 l2 12 l7 -2 l-2.5 -11.5" fill="#8DD1B4" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>` : ""}
+      <g class="head">
+        <path d="M31 38 L30 16 L47 28 Z" fill="${FUR}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M33.5 32 L33.5 22 L42 28 Z" fill="${PINK}"/>
+        <path d="M69 38 L70 16 L53 28 Z" fill="${FUR}" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M66.5 32 L66.5 22 L58 28 Z" fill="${PINK}"/>
+        <circle cx="50" cy="45" r="22" fill="${FUR}" stroke="${INK}" stroke-width="2.5"/>
+        <path d="M47 24 l1 5 M53 24 l-1 5" stroke="${FUR2}" stroke-width="2.6" stroke-linecap="round"/>
+        ${blush}${eyes}
+        <path d="M48 50 h4 l-2 2.6 z" fill="${NOSE}" stroke="${INK}" stroke-width="1.2" stroke-linejoin="round"/>
+        ${mouth}
+        <path d="M29 49.5 h-8 M29.5 53.5 l-7.5 2.2 M71 49.5 h8 M70.5 53.5 l7.5 2.2" stroke="${INK}" stroke-width="1.4" stroke-linecap="round"/>
+        ${has(3) ? `<g transform="translate(66 27) rotate(18)"><path d="M0 0 L-7.5 -5.5 L-7.5 5.5 Z M0 0 L7.5 -5.5 L7.5 5.5 Z" fill="#DDA6D8" stroke="${INK}" stroke-width="1.7" stroke-linejoin="round"/><circle r="2.4" fill="#DDA6D8" stroke="${INK}" stroke-width="1.5"/></g>` : ""}
+        ${has(14) ? `<g transform="translate(33 28)"><circle cx="0" cy="-4" r="3.2" fill="${PINK}" stroke="${INK}" stroke-width="1.2"/><circle cx="3.8" cy="-1.2" r="3.2" fill="${PINK}" stroke="${INK}" stroke-width="1.2"/><circle cx="2.4" cy="3.3" r="3.2" fill="${PINK}" stroke="${INK}" stroke-width="1.2"/><circle cx="-2.4" cy="3.3" r="3.2" fill="${PINK}" stroke="${INK}" stroke-width="1.2"/><circle cx="-3.8" cy="-1.2" r="3.2" fill="${PINK}" stroke="${INK}" stroke-width="1.2"/><circle r="2.2" fill="${FUR2}"/></g>` : ""}
+        ${has(30) ? `<path d="M41 24 l2 -10 l4.5 5.5 l2.5 -8 l2.5 8 l4.5 -5.5 l2 10 z" fill="${FUR2}" stroke="${INK}" stroke-width="1.8" stroke-linejoin="round"/>` : ""}
+      </g>
+      ${zz}
+    </svg>`;
+  }
+
+  /* ---------- État ---------- */
+  let needsPush = false;
+  function normalize(raw){
+    const st = raw && typeof raw === "object" ? raw : {};
+    let tasks = Array.isArray(st.tasks) && st.tasks.length ? st.tasks.filter(t => t && t.id && t.label).map(t => ({id:String(t.id), label:String(t.label)})) : null;
+    if(!tasks) tasks = DEFAULT_TASKS.map(t => ({...t}));
+    else if((st.v || 1) < 2){
+      DEFAULT_TASKS.forEach((d,i) => {
+        if(tasks.some(t => t.id === d.id)) return;
+        const prev = i ? tasks.findIndex(t => t.id === DEFAULT_TASKS[i-1].id) : -1;
+        tasks.splice(prev + 1, 0, {...d});
+      });
+      needsPush = true;
+    }
+    const days = st.days && typeof st.days === "object" ? st.days : {};
+    const seen = Array.isArray(st.seen) ? st.seen.filter(n => typeof n === "number") : [];
+    const rewards = st.rewards && typeof st.rewards === "object" ? st.rewards : {};
+    const bonus = st.bonus && typeof st.bonus === "object" ? st.bonus : {};
+    const out = {v:2, tasks, days, seen, rewards, bonus, sound: st.sound !== false};
+    const rec = out.days[todayKey()];
+    if(rec){ const ids = new Set(tasks.map(t => t.id)); rec.done = (rec.done||[]).filter(id => ids.has(id)); rec.total = tasks.length; }
+    return out;
+  }
+  let state;
+  try { state = normalize(JSON.parse(localStorage.getItem(LS_KEY) || "null")); } catch(e) { state = normalize(null); }
+  function saveLocal(){ try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e){} }
+
+  /* ---------- Calculs ---------- */
+  function doneToday(){
+    const rec = state.days[todayKey()]; if(!rec) return [];
+    const ids = new Set(state.tasks.map(t => t.id));
+    return (rec.done || []).filter(id => ids.has(id));
+  }
+  function isComplete(k){
+    const rec = state.days[k]; if(!rec) return false;
+    if(k === todayKey()) return state.tasks.length > 0 && doneToday().length >= state.tasks.length;
+    return rec.total > 0 && (rec.done || []).length >= rec.total;
+  }
+  const hasTask = (k,id) => { const r = state.days[k]; return !!(r && (r.done||[]).includes(id)); };
+  function compute(){
+    const today = todayKey();
+    const res = {streak:0, best:0, jokers:0, total:0, status:{}};
+    const keys = Object.keys(state.days).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && (state.days[k].done||[]).length).sort();
+    if(!keys.length) return res;
+    let k = keys[0] < today ? keys[0] : today, guard = 0;
+    while(k <= today && guard++ < 4000){
+      if(isComplete(k)){
+        res.streak++; res.total++;
+        if(res.streak % 7 === 0) res.jokers = Math.min(res.jokers + 1, JOKER_MAX);
+        res.best = Math.max(res.best, res.streak);
+        res.status[k] = "full";
+      } else if(k === today){ res.status[k] = "pending"; }
+      else if(res.jokers > 0 && res.streak > 0){ res.jokers--; res.status[k] = "joker"; }
+      else { res.streak = 0; res.status[k] = "miss"; }
+      k = shift(k,1);
+    }
+    return res;
+  }
+  function taskStreak(id){
+    let k = todayKey(), c = 0, g = 0;
+    if(!hasTask(k,id)) k = shift(k,-1);
+    while(hasTask(k,id) && g++ < 2000){ c++; k = shift(k,-1); }
+    return c;
+  }
+  const starCount = () => Object.values(state.bonus).filter(b => b && b.done).length;
+  function challengeOf(k){ let h = 0; for(const c of k) h = (h * 31 + c.charCodeAt(0)) >>> 0; return CHALLENGES[h % CHALLENGES.length]; }
+
+  /* ---------- Son ---------- */
+  let actx = null;
+  function audio(){ try { actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if(actx.state !== "running") actx.resume(); return actx; } catch(e){ return null; } }
+  function notes(freqs, dur, gap){
+    if(!state.sound) return; const a = audio(); if(!a) return;
+    const t0 = a.currentTime + .01;
+    freqs.forEach((f,i) => { const o = a.createOscillator(), g = a.createGain(), t = t0 + i*(gap||.09);
+      o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.07,t+.015); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+      o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+dur+.05); });
+  }
+  function meow(){
+    if(!state.sound) return; const a = audio(); if(!a) return;
+    const t = a.currentTime + .01, o = a.createOscillator(), g = a.createGain(), f = a.createBiquadFilter();
+    o.type = "triangle"; f.type = "lowpass"; f.frequency.value = 1800;
+    o.frequency.setValueAtTime(520,t); o.frequency.linearRampToValueAtTime(900,t+.12); o.frequency.linearRampToValueAtTime(480,t+.42);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.09,t+.05); g.gain.exponentialRampToValueAtTime(.0001,t+.45);
+    o.connect(f); f.connect(g); g.connect(a.destination); o.start(t); o.stop(t+.5);
+  }
+  const SOUND_ON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>`;
+  const SOUND_OFF = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>`;
+
+  /* ---------- Rendu ---------- */
+  const checkIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>`;
+  const xIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`;
+  const upIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>`;
+  const downIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>`;
+  const starIcon = (s, fill) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z" fill="${fill}" stroke="${INK}" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+
+  let catKey = "", sayLock = 0, mood = "sleep";
+  function moodOf(st, d, n){
+    if(n && d === n) return "happy";
+    if(d > 0) return "awake";
+    if(st.streak === 0 && st.status[shift(todayKey(),-1)] === "miss") return "pout";
+    return "sleep";
+  }
+  function defaultSay(d, n, nextTask){
+    if(mood === "happy") return "<b>Mochi ronronne.</b> Journée bouclée, il est fier de toi.";
+    if(mood === "pout") return "<b>Mochi boude un peu</b> depuis hier. Une case cochée et il oublie tout.";
+    if(mood === "sleep") return "<b>Mochi dort encore.</b> Coche une tâche pour le réveiller.";
+    return d / n < .5 ? "<b>Mochi s'étire.</b> On continue avec : " + esc(lc(nextTask.label)) + " ?" : "<b>Mochi te regarde faire.</b> C'est bientôt fini.";
+  }
+
+  function render(justId){
+    const today = todayKey();
+    const st = compute();
+    const done = new Set(doneToday());
+    const n = state.tasks.length, d = state.tasks.filter(t => done.has(t.id)).length;
+    const nextTask = state.tasks.find(t => !done.has(t.id));
+    mood = moodOf(st, d, n);
+
+    $("date").textContent = new Date().toLocaleDateString("fr-CH",{weekday:"long", day:"numeric", month:"long"});
+    $("soundBtn").innerHTML = state.sound ? SOUND_ON : SOUND_OFF;
+    $("soundBtn").setAttribute("aria-pressed", state.sound);
+    $("soundBtn").setAttribute("aria-label", state.sound ? "Couper le son" : "Activer le son");
+
+    $("ring").innerHTML = ringSvg(state.tasks.map(t => done.has(t.id)));
+    const ck = mood + "|" + st.best;
+    if(ck !== catKey){ $("catBtn").innerHTML = catSvg(mood, st.best); catKey = ck; }
+    $("count").textContent = d + " sur " + n + " aujourd'hui";
+
+    let msg;
+    if(!n) msg = "Ajoute ta première tâche pour lancer la routine.";
+    else if(d === n) msg = "Journée bouclée. Bien joué !";
+    else if(d === 0) msg = st.streak ? "Ta série t'attend. On commence ?" : "Une case à la fois. On commence ?";
+    else msg = "Plus que " + plural(n-d, "tâche", "tâches") + ".";
+    $("msg").textContent = msg;
+    if(Date.now() > sayLock) $("say").innerHTML = defaultSay(d, n, nextTask);
+    $("streak").textContent = st.streak + (st.streak > 1 ? " jours d'affilée" : " jour d'affilée");
+    $("jokers").innerHTML = st.jokers
+      ? '<span class="jk"></span>'.repeat(st.jokers) + `<span>${plural(st.jokers,"joker","jokers")} en réserve</span>`
+      : "<span>7 jours de suite = 1 joker</span>";
+
+    $("tasks").innerHTML = state.tasks.map((t,i) => {
+      const s = taskStreak(t.id), on = done.has(t.id), p = PAL[i % 4];
+      return `<button class="task${on?" done":""}${t.id===justId?" just":""}" type="button" data-id="${esc(t.id)}" aria-pressed="${on}" style="--c:${p[1]};--pp:${p[0]}">
+        <span class="check">${checkIcon}</span>
+        <span class="t-main"><span class="t-label">${esc(t.label)}</span><span class="t-sub">${on ? "Fait aujourd'hui" : "À faire"}</span></span>
+        <span class="pill${s?"":" zero"}" title="Jours d'affilée pour cette tâche">${s} j.</span>
+      </button>`;
+    }).join("") || `<div style="padding:16px" class="muted">Ta liste est vide. Touche « Modifier » pour ajouter une tâche.</div>`;
+
+    $("editList").innerHTML = state.tasks.map((t,i) =>
+      `<div class="edit-item"><span>${esc(t.label)}</span>
+        <button class="del mv" type="button" data-mv="-1" data-id="${esc(t.id)}" aria-label="Monter ${esc(t.label)}"${i===0?" disabled":""}>${upIcon}</button>
+        <button class="del mv" type="button" data-mv="1" data-id="${esc(t.id)}" aria-label="Descendre ${esc(t.label)}"${i===n-1?" disabled":""}>${downIcon}</button>
+        <button class="del" type="button" data-del="${esc(t.id)}" aria-label="Supprimer ${esc(t.label)}">${xIcon}</button></div>`).join("");
+    $("editCount").textContent = n + " / 12";
+
+    renderBonus();
+
+    let html = "";
+    for(let i=6;i>=0;i--){
+      const k = shift(today,-i), dt = parseKey(k), s = st.status[k];
+      let cls = s === "full" ? "full" : s === "joker" ? "joker" : s === "miss" ? "miss" : "";
+      if(k === today) cls = isComplete(k) ? "full" : "pending";
+      const star = state.bonus[k] && state.bonus[k].done ? `<span class="st">${starIcon(14,"#F6C56F")}</span>` : "";
+      html += `<div class="day${k===today?" today":""}"><span class="dn">${dt.toLocaleDateString("fr-CH",{weekday:"short"}).replace(".","").slice(0,3)}</span><span class="dot ${cls}">${dt.getDate()}${star}</span></div>`;
+    }
+    $("days").innerHTML = html;
+
+    const nb = BADGES.find(b => b.n > st.best);
+    if(nb){
+      const left = nb.n - st.streak, gift = (state.rewards[nb.n] || "").trim();
+      $("next").innerHTML = `Plus que <b>${plural(left,"jour","jours")}</b> d'affilée pour « ${esc(nb.name)} »` + (gift ? ` et ton cadeau : <b>${esc(gift)}</b>.` : ".");
+      $("barFill").style.width = Math.round(100 * st.streak / nb.n) + "%";
+    } else { $("next").textContent = "Tous les badges sont débloqués. Chapeau."; $("barFill").style.width = "100%"; }
+    $("badges").innerHTML = BADGES.map(b => {
+      const on = st.best >= b.n, p = PAL[b.p], gift = (state.rewards[b.n] || "").trim();
+      return `<div class="badge${on?" on":""}" style="--pb:${p[0]};--pa:${p[1]}"><span class="medal">${b.n}</span><span class="b-name">${esc(b.name)}</span><span class="b-req">${gift ? esc(gift) : on ? "Mochi : " + b.acc : b.n + " jours"}</span></div>`;
+    }).join("");
+
+    $("sBest").textContent = st.best;
+    $("sTotal").textContent = st.total;
+    $("sStars").textContent = starCount();
+    return st;
+  }
+
+  function renderBonus(){
+    const k = todayKey(), b = state.bonus[k] || {}, ch = challengeOf(k), stars = starCount();
+    $("starsTxt").textContent = plural(stars, "étoile", "étoiles");
+    $("flip").classList.toggle("open", !!b.flipped);
+    $("flipBtn").tabIndex = b.flipped ? -1 : 0;
+    let actions;
+    if(b.done) actions = `<div class="won"><span class="star-dot">${starIcon(18,"#F6C56F")}</span>Bravo, une étoile de plus.<button class="link" data-bonus="undo" type="button" style="margin-left:auto;font-size:13px">Annuler</button></div>`;
+    else if(b.skipped) actions = `<div class="bonus-actions"><span class="muted">Pas de souci, nouvelle carte demain.</span><button class="link" data-bonus="done" type="button">Finalement, c'est fait</button></div>`;
+    else actions = `<div class="bonus-actions"><button class="btn btn-primary" data-bonus="done" type="button">C'est fait</button><button class="link" data-bonus="skip" type="button">Pas aujourd'hui</button></div>`;
+    $("back").innerHTML = `<span class="eyebrow">Défi bonus du jour</span><p class="challenge">${esc(ch)}</p>${actions}`;
+  }
+
+  function renderRewards(){
+    $("rwList").innerHTML = BADGES.map(b => `<div class="rw"><label for="rw${b.n}">${b.n} jours</label><input class="input" id="rw${b.n}" data-rw="${b.n}" maxlength="60" placeholder="Ex. : ${esc(b.hint)}" value="${esc(state.rewards[b.n] || "")}" autocomplete="off"></div>`).join("");
+  }
+
+  /* ---------- Toast, cœurs, fenêtre ---------- */
+  function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2200); }
+  function hearts(k){
+    const ring = document.querySelector(".ring");
+    for(let i=0;i<k;i++){
+      const h = document.createElement("span");
+      h.className = "heart"; h.style.setProperty("--dx", ((Math.random()*36)-18).toFixed(0) + "px"); h.style.animationDelay = (i*0.12) + "s";
+      h.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 20s-7-4.4-7-9.5A4 4 0 0 1 12 8a4 4 0 0 1 7 2.5C19 15.6 12 20 12 20z" fill="${pick(["#FCDCE1","#F0D9EF","#FFE6BB"])}" stroke="${INK}" stroke-width="1.6"/></svg>`;
+      ring.appendChild(h); setTimeout(() => h.remove(), 1400 + i*120);
+    }
+  }
+  const queue = [];
+  function showModal(m){ queue.push(m); if($("modal").hidden) nextModal(); }
+  function nextModal(){
+    const m = queue.shift();
+    if(!m){ $("modal").hidden = true; return; }
+    $("mCat").innerHTML = catSvg("happy", m.best);
+    $("mTitle").textContent = m.title; $("mText").textContent = m.text;
+    $("mGift").hidden = !m.gift; $("mGift").textContent = m.gift ? "Ton cadeau : " + m.gift : "";
+    $("modal").hidden = false; $("mClose").focus();
+  }
+  $("mClose").addEventListener("click", nextModal);
+  $("modal").addEventListener("click", e => { if(e.target === $("modal")) nextModal(); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape" && !$("modal").hidden) nextModal(); });
+
+  function checkBadges(st){
+    let changed = false;
+    BADGES.forEach(b => {
+      if(st.best >= b.n && !state.seen.includes(b.n)){
+        state.seen.push(b.n); changed = true;
+        const gift = (state.rewards[b.n] || "").trim();
+        showModal({best: st.best, title: "Badge « " + b.name + " »", gift,
+          text: "Mochi gagne " + b.acc + "." + (b.n === 7 ? " Et toi, un joker pour sauver un jour raté." : "")});
+      }
+    });
+    return changed;
+  }
+
+  /* ---------- Actions ---------- */
+  function syncToday(){
+    const k = todayKey(), ids = new Set(state.tasks.map(t => t.id)), rec = state.days[k];
+    if(rec){ rec.done = (rec.done||[]).filter(id => ids.has(id)); rec.total = state.tasks.length; }
+  }
+  $("tasks").addEventListener("click", e => {
+    const btn = e.target.closest(".task"); if(!btn) return;
+    const id = btn.dataset.id, k = todayKey(), was = isComplete(k), before = mood;
+    const rec = state.days[k] || (state.days[k] = {done:[], total:state.tasks.length});
+    const i = rec.done.indexOf(id), adding = i < 0;
+    if(adding) rec.done.push(id); else rec.done.splice(i,1);
+    syncToday();
+    sayLock = 0;
+    const st = render(adding ? id : null);
+    if(!was && isComplete(k)){
+      notes([523.25,659.25,783.99,1046.5], .5);
+      hearts(5);
+      showModal({best: st.best, title: "Journée bouclée",
+        text: st.streak > 1 ? st.streak + " jours d'affilée. La routine s'installe tout doucement." : "Premier jour de ta série. Reviens demain pour la faire grandir."});
+    } else if(adding){
+      notes([660, 990], .18);
+      if(before === "sleep" || before === "pout"){ toast("Mochi se réveille."); hearts(2); }
+      else toast(id === "chats" ? "Les vrais chats sont contents. Mochi aussi." : pick(CHEERS));
+    }
+    checkBadges(st);
+    commit(false);
+  });
+
+  const TAPS = {
+    sleep:["Zzz… Mochi rêve de croquettes.","Mochi ouvre un œil, puis le referme.","Chut. Il attend ta première case."],
+    pout:["Mochi te tourne le dos. Une case et c'est oublié.","Hmpf. Mochi fait semblant de ne pas te voir.","Mochi boude, mais il accepte les caresses."],
+    awake:["Miaou ! Il reste : ","Mochi te pousse doucement vers : ","Mochi tapote l'écran. Prochaine étape : "],
+    happy:["Rrrrr… Mochi ronronne très fort.","Mochi fait des petits pains de bonheur.","Mochi est officiellement fier de toi."]
+  };
+  $("catBtn").addEventListener("click", () => {
+    meow(); hearts(3);
+    const done = new Set(doneToday()), nt = state.tasks.find(t => !done.has(t.id));
+    let line = pick(TAPS[mood]);
+    if(mood === "awake" && nt) line += "<b>" + esc(lc(nt.label)) + "</b>.";
+    $("say").innerHTML = line; sayLock = Date.now() + 5000;
+    clearTimeout(sayTimer); sayTimer = setTimeout(() => { sayLock = 0; render(); }, 5100);
+  });
+  let sayTimer = null;
+
+  $("soundBtn").addEventListener("click", () => { state.sound = !state.sound; if(state.sound) notes([660],.15); commit(true); });
+
+  $("flipBtn").addEventListener("click", () => {
+    const k = todayKey(); state.bonus[k] = Object.assign({}, state.bonus[k], {flipped:true});
+    notes([440, 554, 659], .2, .06); commit(true);
+  });
+  $("back").addEventListener("click", e => {
+    const b = e.target.closest("[data-bonus]"); if(!b) return;
+    const k = todayKey(), cur = Object.assign({flipped:true}, state.bonus[k]), a = b.dataset.bonus;
+    if(a === "done"){ cur.done = true; cur.skipped = false; notes([784, 1046.5, 1318.5], .3, .08); toast("Une étoile de plus. Mochi applaudit."); }
+    if(a === "skip"){ cur.skipped = true; cur.done = false; }
+    if(a === "undo"){ cur.done = false; }
+    state.bonus[k] = cur; commit(true);
+  });
+
+  $("editBtn").addEventListener("click", () => {
+    const ed = $("editor"); ed.hidden = !ed.hidden;
+    $("editBtn").textContent = ed.hidden ? "Modifier" : "Terminé";
+    if(!ed.hidden) $("newTask").focus();
+  });
+  $("addForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const v = $("newTask").value.trim(); if(!v) return;
+    if(state.tasks.length >= 12){ toast("12 tâches au maximum"); return; }
+    state.tasks.push({id:"t" + Date.now().toString(36), label:v.slice(0,48)});
+    $("newTask").value = "";
+    syncToday(); commit(true); $("newTask").focus();
+  });
+  $("editList").addEventListener("click", e => {
+    const m = e.target.closest("[data-mv]");
+    if(m){
+      const i = state.tasks.findIndex(t => t.id === m.dataset.id), j = i + Number(m.dataset.mv);
+      if(i < 0 || j < 0 || j >= state.tasks.length) return;
+      const [t] = state.tasks.splice(i, 1); state.tasks.splice(j, 0, t);
+      commit(true);
+      const again = document.querySelector(`#editList [data-mv="${m.dataset.mv}"][data-id="${CSS.escape(t.id)}"]:not([disabled])`)
+        || document.querySelector(`#editList [data-mv="${-Number(m.dataset.mv)}"][data-id="${CSS.escape(t.id)}"]`);
+      if(again) again.focus();
+      return;
+    }
+    const b = e.target.closest("[data-del]"); if(!b) return;
+    state.tasks = state.tasks.filter(t => t.id !== b.dataset.del);
+    syncToday(); commit(true);
+  });
+
+  $("rwBtn").addEventListener("click", () => {
+    const ed = $("rwEditor"); ed.hidden = !ed.hidden;
+    $("rwBtn").textContent = ed.hidden ? "Mes cadeaux" : "Terminé";
+    if(!ed.hidden) renderRewards();
+  });
+  $("rwList").addEventListener("input", e => {
+    const inp = e.target.closest("[data-rw]"); if(!inp) return;
+    state.rewards[inp.dataset.rw] = inp.value.slice(0,60);
+    clearTimeout(rwTimer); rwTimer = setTimeout(() => commit(true), 600);
+  });
+  let rwTimer = null;
+
+  /* ---------- Sauvegarde (sur cet appareil) ---------- */
+  function commit(doRender){ saveLocal(); if(doRender) render(); }
+
+  /* Export et import d'une copie */
+  $("exportBtn").addEventListener("click", () => {
+    try {
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "tout-doux-" + todayKey() + ".json";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      $("dataMsg").textContent = "Copie exportée.";
+    } catch(e){ $("dataMsg").textContent = "L'export n'a pas fonctionné dans ce navigateur."; }
+  });
+  let pendingImport = null;
+  $("importFile").addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0]; e.target.value = "";
+    if(!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const raw = JSON.parse(r.result);
+        if(!raw || typeof raw !== "object" || !Array.isArray(raw.tasks) || typeof raw.days !== "object") throw 0;
+        pendingImport = normalize(raw);
+        const nd = Object.keys(pendingImport.days).length;
+        $("importTxt").textContent = "Remplacer tes données actuelles par cette copie (" + plural(pendingImport.tasks.length, "tâche", "tâches") + ", " + plural(nd, "jour enregistré", "jours enregistrés") + ") ?";
+        $("importBox").hidden = false; $("dataMsg").textContent = "";
+      } catch(err){ pendingImport = null; $("dataMsg").textContent = "Ce fichier n'est pas une copie de Tout Doux."; }
+    };
+    r.readAsText(f);
+  });
+  $("importYes").addEventListener("click", () => {
+    if(!pendingImport) return;
+    state = pendingImport; pendingImport = null; catKey = "";
+    $("importBox").hidden = true; commit(true); $("dataMsg").textContent = "Copie importée.";
+  });
+  $("importNo").addEventListener("click", () => { pendingImport = null; $("importBox").hidden = true; });
+
+  /* ---------- Démarrage ---------- */
+  let lastDay = todayKey();
+  saveLocal();
+  if(checkBadges(render())) commit(false);
+  setInterval(() => { if(todayKey() !== lastDay){ lastDay = todayKey(); render(); } }, 60000);
+  document.addEventListener("visibilitychange", () => { if(!document.hidden){ lastDay = todayKey(); render(); } });
+
+  /* Mode hors ligne et installation sur l'écran d'accueil */
+  if("serviceWorker" in navigator && location.protocol === "https:"){
+    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  }
+})();
+</script>
+</body>
+</html>
