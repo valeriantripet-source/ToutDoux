@@ -1,6 +1,6 @@
 /* Tout Doux : mode hors ligne.
    Pour forcer la mise à jour après une modification de l'appli, change le numéro de version ci-dessous. */
-const CACHE = "tout-doux-v1";
+const CACHE = "tout-doux-v5";
 const SHELL = [
   "./",
   "./index.html",
